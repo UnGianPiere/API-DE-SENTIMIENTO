@@ -1,8 +1,5 @@
-services:
-  - type: web
-    name: sentiment-api
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: ./start.sh
-    plan: free
-    region: oregon
+buildCommand: |
+  pip install --upgrade pip setuptools wheel
+  pip install --force-reinstall numpy==1.24.4 Cython==3.0.10
+  pip install --no-cache-dir -r requirements.txt
+  python -m spacy download es_core_news_sm
