@@ -2,11 +2,16 @@ app = "api-sentimientos"
 primary_region = "gru"
 
 [build]
-  dockerfile = "Dockerfile"
+  builder = "paketobuildpacks/builder:base"
+  buildpacks = ["python"]
+
+[build.args]
+  PYTHON_VERSION = "3.8"
 
 [env]
   PORT = "8000"
   HOST = "0.0.0.0"
+  PYTHONUNBUFFERED = "1"
 
 [http_service]
   internal_port = 8000
