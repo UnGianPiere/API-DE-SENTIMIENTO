@@ -2,10 +2,11 @@ app = "api-sentimientos"
 primary_region = "gru"
 
 [build]
-  builder = "paketobuildpacks/builder:base"
+  builder = "heroku/buildpacks:20"
+  buildpacks = ["heroku/python"]
 
-[experimental]
-  auto_rollback = true
+[deploy]
+  release_command = "python -m spacy download es_core_news_sm"
 
 [env]
   PORT = "8000"

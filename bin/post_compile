@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "-----> Post-compile hook"
+
+# Descarga el modelo de spaCy
+echo "-----> Downloading spaCy model"
+python -m spacy download es_core_news_sm
+
+echo "-----> Post-compile done"
