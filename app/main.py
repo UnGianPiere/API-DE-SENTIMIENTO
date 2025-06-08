@@ -81,3 +81,8 @@ def analizar_comentario(data: ComentarioEntrada):
         "confianza": confianza,
         "palabras_clave": palabras_clave
     }
+
+@app.get("/ping")
+def ping():
+    return "OK"
+
