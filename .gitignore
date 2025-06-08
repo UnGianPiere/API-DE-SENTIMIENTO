@@ -1,5 +1,11 @@
-# Ignorar carpeta de modelo local
+# Ignorar carpeta de modelo y cache
 app/modelo_roberta/
+.cache/
+cache/
+*.safetensors
+*.bin
+model.safetensors
+pytorch_model.bin
 
 # Cache de Python
 __pycache__/
