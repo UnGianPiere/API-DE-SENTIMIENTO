@@ -1,0 +1,18 @@
+# Ignorar carpeta de modelo local
+app/modelo_roberta/
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+env/
+
+# Cache de Hugging Face
+cache/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

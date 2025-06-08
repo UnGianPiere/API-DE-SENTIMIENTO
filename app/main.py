@@ -24,27 +24,15 @@ tokenizer = None
 model = None
 nlp = None
 
+MODEL_NAME = "UMUTeam/roberta-spanish-sentiment-analysis"
+
 @app.on_event("startup")
 async def load_models():
     global tokenizer, model, nlp
     try:
-        # Cargar modelo local de sentimiento
-        model_path = os.path.join(os.path.dirname(__file__), "modelo_roberta")
-        
-        # Intentar cargar el modelo primero
-        model = AutoModelForSequenceClassification.from_pretrained(
-            model_path,
-            local_files_only=True,
-            trust_remote_code=True
-        )
-        
-        # Luego cargar el tokenizer con la configuración específica
-        tokenizer = AutoTokenizer.from_pretrained(
-            model_path,
-            local_files_only=True,
-            trust_remote_code=True,
-            use_fast=False  # Usar el tokenizer lento pero más estable
-        )
+        # Cargar modelo de sentimiento desde Hugging Face
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
         
         # Cargar modelo spaCy
         nlp = spacy.load("es_core_news_sm")

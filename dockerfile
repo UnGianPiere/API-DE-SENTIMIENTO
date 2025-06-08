@@ -1,5 +1,12 @@
 FROM python:3.8-slim
 
+# Establecer variables de entorno
+ENV PORT=8000
+ENV HOST=0.0.0.0
+ENV TRANSFORMERS_CACHE=/app/cache
+ENV PYTHONUNBUFFERED=1
+
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     build-essential gcc g++ curl ca-certificates git \
     && rm -rf /var/lib/apt/lists/*
@@ -16,11 +23,18 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Descargar spaCy model
 RUN python -m spacy download es_core_news_sm
 
-# Copiar toda la aplicación incluyendo el modelo
+# Crear y configurar directorio para cache
+RUN mkdir -p /app/cache && \
+    chmod -R 777 /app/cache
+
+# Copiar el código de la aplicación
 COPY ./app ./app
 
-# Verificar que los archivos del modelo existan
-RUN ls -la /app/app/modelo_roberta/
+# Exponer el puerto
+EXPOSE 8000
+
+# Comando para iniciar la aplicación
+CMD uvicorn app.main:app --host ${HOST} --port ${PORT}
 
 EXPOSE 8000
 
