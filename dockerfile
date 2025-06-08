@@ -1,21 +1,30 @@
-# Imagen base liviana de Python
 FROM python:3.8-slim
 
-# Directorio de trabajo
+RUN apt-get update && apt-get install -y \
+    build-essential gcc g++ curl ca-certificates git \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copiar e instalar dependencias
+# Copiar requirements e instalar dependencias
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Descargar modelo de spaCy
+# Actualizar pip e instalar dependencias
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Descargar spaCy model
 RUN python -m spacy download es_core_news_sm
 
-# Copiar el código fuente
-COPY app/ /app
+# Copiar toda la aplicación incluyendo el modelo
+COPY ./app ./app
 
-# Exponer el puerto
+# Verificar que los archivos del modelo existan
+RUN ls -la /app/app/modelo_roberta/
+
 EXPOSE 8000
 
-# Comando para ejecutar
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Usar un script de inicio
+COPY start.sh .
+RUN chmod +x start.sh
+CMD ["./start.sh"]

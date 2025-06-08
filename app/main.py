@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import os
 
 # Inicializar FastAPI
 app = FastAPI()
@@ -18,14 +19,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cargar modelo de sentimiento
-model_name = "UMUTeam/roberta-spanish-sentiment-analysis"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name)
+# Variables globales para los modelos
+tokenizer = None
+model = None
+nlp = None
 
-# Cargar modelo spaCy + PyTextRank para palabras clave
-nlp = spacy.load("es_core_news_sm")
-nlp.add_pipe("textrank")
+@app.on_event("startup")
+async def load_models():
+    global tokenizer, model, nlp
+    try:
+        # Cargar modelo local de sentimiento
+        model_path = os.path.join(os.path.dirname(__file__), "modelo_roberta")
+        
+        # Intentar cargar el modelo primero
+        model = AutoModelForSequenceClassification.from_pretrained(
+            model_path,
+            local_files_only=True,
+            trust_remote_code=True
+        )
+        
+        # Luego cargar el tokenizer con la configuración específica
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_path,
+            local_files_only=True,
+            trust_remote_code=True,
+            use_fast=False  # Usar el tokenizer lento pero más estable
+        )
+        
+        # Cargar modelo spaCy
+        nlp = spacy.load("es_core_news_sm")
+        nlp.add_pipe("textrank")
+        print("Modelos cargados exitosamente")
+    except Exception as e:
+        print(f"Error al cargar los modelos: {str(e)}")
+        raise e
 
 # Mapeo etiquetas del modelo a términos amigables
 mapping = {
