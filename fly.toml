@@ -1,0 +1,22 @@
+app = "api-sentimiento"  # Este es el nombre de tu app en Fly.io
+
+primary_region = "mia"  # Puedes cambiar a otra región si lo deseas (ej: "scl", "gru", "dfw", etc.)
+
+[build]
+  # Solo necesitas esto si usas Docker, de lo contrario puedes omitirlo
+  # dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"  # Fly inyecta esta variable automáticamente, pero es bueno dejarla explícita
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
