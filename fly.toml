@@ -2,11 +2,13 @@ app = "api-sentimientos"
 primary_region = "gru"
 
 [build]
-  dockerfile = "Dockerfile"
+  builder = "paketobuildpacks/builder:base"
+
+[experimental]
+  auto_rollback = true
 
 [env]
   PORT = "8000"
-  HOST = "0.0.0.0"
   PYTHONUNBUFFERED = "1"
 
 [http_service]
