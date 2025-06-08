@@ -2,15 +2,16 @@ app = "api-sentimientos"
 primary_region = "gru"
 
 [build]
-  builder = "heroku/buildpacks:20"
   buildpacks = ["heroku/python"]
 
-[deploy]
-  release_command = "python -m spacy download es_core_news_sm"
-
 [env]
+  PYTHON_VERSION = "3.8.18"
   PORT = "8000"
   PYTHONUNBUFFERED = "1"
+
+[deploy]
+  strategy = "immediate"
+  release_command = "python -m spacy download es_core_news_sm"
 
 [http_service]
   internal_port = 8000
